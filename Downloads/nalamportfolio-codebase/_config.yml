@@ -1,0 +1,46 @@
+# Jekyll configuration for GitHub Pages
+title: "Ramachandra Vamsi Krishna Nalam - Portfolio"
+description: "Data Engineer & AI Enthusiast Portfolio"
+baseurl: ""
+url: "https://nalamportfolio.dev"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Exclude files from processing
+exclude:
+  - node_modules/
+  - .venv/
+  - __pycache__/
+  - "*.pyc"
+  - .env
+  - .coverage
+  - .pytest_cache/
+  - tests/
+  - tests_js/
+  - api/
+  - server.py
+  - requirements.txt
+  - package.json
+  - package-lock.json
+  - pytest.ini
+  - .replit
+  - .devserver.pid
+  - README.md
+  - CHANGES.md
+  - replit.md
+
+# Include files
+include:
+  - .nojekyll
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Custom settings
+permalink: pretty
