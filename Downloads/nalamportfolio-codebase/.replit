@@ -1,0 +1,4 @@
+run = "python server.py"
+language = "python3"
+hidden = [".github", ".devserver.pid"]
+
