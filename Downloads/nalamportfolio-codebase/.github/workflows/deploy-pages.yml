@@ -1,4 +1,4 @@
-name: Deploy static content to Pages
+name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
@@ -12,53 +12,54 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
+      - name: Create build directory
         run: |
-          if [ -f package.json ]; then
-            npm ci
-          fi
+          mkdir -p dist
+          echo "Created build directory"
 
-      - name: Create deployment directory
+      - name: Copy static files
         run: |
-          mkdir -p _site
-          cp index.html _site/
-          cp styles.css _site/
-          cp main.js _site/
-          cp chatbot.js _site/
-          cp favicon.svg _site/
-          cp profile-image.jpg _site/
-          cp CNAME _site/
-          cp .nojekyll _site/
-          cp robots.txt _site/
-          cp sitemap.xml _site/
+          # Copy main files
+          cp index.html dist/
+          cp styles.css dist/
+          cp main.js dist/
+          cp chatbot.js dist/
+          cp favicon.svg dist/
+          cp profile-image.jpg dist/
+          cp CNAME dist/
+          cp .nojekyll dist/
+          cp robots.txt dist/
+          cp sitemap.xml dist/
+
+          # Copy assets directory if it exists
           if [ -d attached_assets ]; then
-            cp -r attached_assets _site/
+            cp -r attached_assets dist/
           fi
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+          # List files for debugging
+          echo "Files copied to dist:"
+          ls -la dist/
 
-      - name: Upload artifact
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment
