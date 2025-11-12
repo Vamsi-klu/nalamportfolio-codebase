@@ -15,14 +15,15 @@
     "testEnvironment": "jsdom",
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "chatbot.js"
+      "chatbot.js",
+      "main.js"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 0,
-        "functions": 100,
-        "lines": 0,
-        "statements": 0
+        "branches": 95,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
       }
     }
   }
