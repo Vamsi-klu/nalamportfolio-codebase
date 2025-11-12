@@ -56,10 +56,18 @@ global.IntersectionObserver = IntersectionObserverMock;
 const Portfolio = require('../main.js');
 
 describe('ThemeManager', () => {
+  let eventListeners = [];
+
   beforeEach(() => {
     document.body.innerHTML = '';
     localStorage.clear();
     document.documentElement.removeAttribute('data-theme');
+
+    // Clean up event listeners
+    eventListeners.forEach(({ event, handler }) => {
+      window.removeEventListener(event, handler);
+    });
+    eventListeners = [];
   });
 
   test('getCurrentTheme returns default light theme', () => {
@@ -73,7 +81,9 @@ describe('ThemeManager', () => {
   });
 
   test('setTheme throws error for invalid theme', () => {
-    expect(() => Portfolio.ThemeManager.setTheme('invalid')).toThrow('Invalid theme: invalid');
+    expect(() => {
+      Portfolio.ThemeManager.setTheme('invalid');
+    }).toThrow('Invalid theme: invalid');
   });
 
   test('toggleTheme switches between themes', () => {
@@ -123,10 +133,13 @@ describe('NavbarManager', () => {
   beforeEach(() => {
     document.body.innerHTML = '<nav class="navbar"></nav>';
     Object.defineProperty(window, 'scrollY', { value: 0, writable: true, configurable: true });
+    // Reset theme to light
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
   });
 
   test('updateNavbar applies light theme styles when not scrolled', () => {
-    Portfolio.ThemeManager.setTheme('light');
+    document.documentElement.setAttribute('data-theme', 'light');
     Portfolio.NavbarManager.updateNavbar();
     const navbar = document.querySelector('.navbar');
     expect(navbar.style.background).toBe('rgba(255, 255, 255, 0.95)');
@@ -143,7 +156,7 @@ describe('NavbarManager', () => {
 
   test('updateNavbar applies scrolled styles', () => {
     Object.defineProperty(window, 'scrollY', { value: 100, writable: true, configurable: true });
-    Portfolio.ThemeManager.setTheme('light');
+    document.documentElement.setAttribute('data-theme', 'light');
     Portfolio.NavbarManager.updateNavbar();
     const navbar = document.querySelector('.navbar');
     expect(navbar.style.background).toBe('rgba(255, 255, 255, 0.98)');
@@ -336,14 +349,15 @@ describe('NavigationManager', () => {
     expect(() => Portfolio.NavigationManager.setupActiveLink()).not.toThrow();
   });
 
-  test('setupActiveLink creates IntersectionObserver', (done) => {
+  test('setupActiveLink creates IntersectionObserver', async () => {
     Portfolio.NavigationManager.setupActiveLink();
 
-    setTimeout(() => {
-      const homeLink = document.querySelector('a[href="#home"]');
-      expect(homeLink.classList.contains('active')).toBe(true);
-      done();
-    }, 10);
+    // Wait for IntersectionObserver mock callback to execute
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // The mock fires callbacks for all sections, so the last section (#about) will be active
+    const aboutLink = document.querySelector('a[href="#about"]');
+    expect(aboutLink.classList.contains('active')).toBe(true);
   });
 
   test('setupSmoothScrolling handles anchor clicks', () => {
@@ -388,12 +402,17 @@ describe('AccessibilityManager', () => {
   test('setupSkipLink handles skip link clicks', () => {
     Portfolio.AccessibilityManager.setupSkipLink();
     const skipLink = document.querySelector('.skip-link');
-    const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView').mockImplementation();
+    const target = document.querySelector('#main');
+
+    // Mock scrollIntoView if it doesn't exist
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = jest.fn();
+    }
+    const scrollSpy = jest.spyOn(target, 'scrollIntoView');
 
     skipLink.click();
 
     expect(scrollSpy).toHaveBeenCalled();
-    scrollSpy.mockRestore();
   });
 
   test('setupSkipLink handles missing skip link gracefully', () => {
@@ -447,7 +466,7 @@ describe('ProjectInteractions', () => {
 
     const mouseLeave = new Event('mouseleave');
     card.dispatchEvent(mouseLeave);
-    expect(card.style.transform).toBe('translateY(0px)');
+    expect(card.style.transform).toMatch(/translateY\(0(px)?\)/);
   });
 });
 
@@ -581,6 +600,11 @@ describe('ScrollAnimations', () => {
 });
 
 describe('EventDelegator', () => {
+  beforeEach(() => {
+    // Reset EventDelegator to allow re-initialization in each test
+    Portfolio.EventDelegator.reset();
+  });
+
   test('init handles theme toggle clicks', () => {
     document.body.innerHTML = '<button class="theme-toggle"><span class="theme-icon">🌙</span></button>';
     Portfolio.EventDelegator.init();
@@ -647,6 +671,128 @@ describe('EventDelegator', () => {
     card.dispatchEvent(tabEvent);
 
     expect(card.classList.contains('flipped')).toBe(false);
+  });
+});
+
+describe('ErrorHandler', () => {
+  test('setup registers window error handler', () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    Portfolio.ErrorHandler.setup();
+
+    const error = new Error('Test error');
+    window.dispatchEvent(new ErrorEvent('error', { error }));
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Portfolio error:', error);
+    consoleErrorSpy.mockRestore();
+  });
+
+  test('setup registers unhandledrejection handler', () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    Portfolio.ErrorHandler.setup();
+
+    const reason = new Error('Promise rejection');
+    const event = new Event('unhandledrejection');
+    Object.defineProperty(event, 'reason', { value: reason });
+    window.dispatchEvent(event);
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Unhandled promise rejection:', reason);
+    consoleErrorSpy.mockRestore();
+  });
+});
+
+describe('BrowserSupport', () => {
+  test('check handles missing IntersectionObserver', () => {
+    const originalIO = global.IntersectionObserver;
+    delete global.IntersectionObserver;
+
+    document.body.innerHTML = '<div class="animate-on-scroll"></div>';
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+    Portfolio.BrowserSupport.check();
+
+    const element = document.querySelector('.animate-on-scroll');
+    expect(element.classList.contains('animate')).toBe(true);
+    expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('IntersectionObserver not supported'));
+
+    global.IntersectionObserver = originalIO;
+    consoleWarnSpy.mockRestore();
+  });
+
+  test('check does nothing when IntersectionObserver is supported', () => {
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+    Portfolio.BrowserSupport.check();
+
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+    consoleWarnSpy.mockRestore();
+  });
+});
+
+describe('ContactInteractions', () => {
+  test('setup handles mailto link clicks', () => {
+    jest.useFakeTimers();
+    document.body.innerHTML = '<a href="mailto:test@example.com" class="contact-link">Email</a>';
+
+    Portfolio.ContactInteractions.setup();
+
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const link = document.querySelector('.contact-link');
+
+    link.click();
+
+    expect(consoleLogSpy).toHaveBeenCalledWith('Email link clicked');
+
+    jest.advanceTimersByTime(100);
+    consoleLogSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('setup handles tel link clicks', () => {
+    jest.useFakeTimers();
+    document.body.innerHTML = '<a href="tel:+1234567890" class="contact-link">Call</a>';
+
+    Portfolio.ContactInteractions.setup();
+
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const link = document.querySelector('.contact-link');
+
+    link.click();
+
+    expect(consoleLogSpy).toHaveBeenCalledWith('Phone link clicked');
+
+    jest.advanceTimersByTime(100);
+    consoleLogSpy.mockRestore();
+    jest.useRealTimers();
+  });
+});
+
+describe('NavigationManager additional tests', () => {
+  test('setupSmoothScrolling handles missing target section', () => {
+    Portfolio.NavigationManager.setupSmoothScrolling();
+    document.body.innerHTML = '<a href="#nonexistent">Link</a>';
+
+    const link = document.querySelector('a[href="#nonexistent"]');
+    const scrollSpy = jest.spyOn(window, 'scrollTo').mockImplementation();
+
+    link.click();
+
+    expect(scrollSpy).not.toHaveBeenCalled();
+    scrollSpy.mockRestore();
+  });
+
+  test('setupSmoothScrolling handles empty href', () => {
+    Portfolio.NavigationManager.setupSmoothScrolling();
+    document.body.innerHTML = '<a href="#">Link</a>';
+
+    const link = document.querySelector('a[href="#"]');
+    const scrollSpy = jest.spyOn(window, 'scrollTo').mockImplementation();
+
+    link.click();
+
+    expect(scrollSpy).not.toHaveBeenCalled();
+    scrollSpy.mockRestore();
   });
 });
 

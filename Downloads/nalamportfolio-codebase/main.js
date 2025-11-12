@@ -90,24 +90,34 @@
 
     // ========== Event Delegation Manager ==========
     const EventDelegator = {
+        _initialized: false,
+        _listeners: [],
+
         init() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             // Theme toggle
-            document.addEventListener('click', (e) => {
+            const themeClickHandler = (e) => {
                 if (e.target.closest('.theme-toggle')) {
                     ThemeManager.toggleTheme();
                 }
-            });
+            };
+            document.addEventListener('click', themeClickHandler);
+            this._listeners.push({ type: 'click', handler: themeClickHandler });
 
             // Project card flip
-            document.addEventListener('click', (e) => {
+            const cardClickHandler = (e) => {
                 const card = e.target.closest('.project-card');
                 if (card) {
                     card.classList.toggle('flipped');
                 }
-            });
+            };
+            document.addEventListener('click', cardClickHandler);
+            this._listeners.push({ type: 'click', handler: cardClickHandler });
 
             // Keyboard support for project cards
-            document.addEventListener('keydown', (e) => {
+            const cardKeyHandler = (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     const card = e.target.closest('.project-card');
                     if (card) {
@@ -115,7 +125,18 @@
                         card.classList.toggle('flipped');
                     }
                 }
+            };
+            document.addEventListener('keydown', cardKeyHandler);
+            this._listeners.push({ type: 'keydown', handler: cardKeyHandler });
+        },
+
+        reset() {
+            // Remove all event listeners
+            this._listeners.forEach(({ type, handler }) => {
+                document.removeEventListener(type, handler);
             });
+            this._listeners = [];
+            this._initialized = false;
         }
     };
 
@@ -173,8 +194,11 @@
                 const link = e.target.closest('a[href^="#"]');
                 if (!link) return;
 
-                e.preventDefault();
                 const targetId = link.getAttribute('href');
+                // Don't process empty or just "#" hrefs
+                if (!targetId || targetId === '#') return;
+
+                e.preventDefault();
                 const targetSection = document.querySelector(targetId);
 
                 if (targetSection) {

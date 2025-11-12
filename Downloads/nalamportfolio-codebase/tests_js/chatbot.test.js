@@ -440,14 +440,19 @@ describe('init function', () => {
 
   test('init handles errors gracefully', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    // Make createElement throw an error to trigger the catch block
+    const originalCreateElement = document.createElement.bind(document);
+    document.createElement = () => {
+      throw new Error('Test DOM error');
+    };
+
     const chatbot = ChatbotFactory();
-
-    // Mock createChatbot to throw error
-    chatbot.createChatbot = () => { throw new Error('Test error'); };
-
     expect(() => chatbot.init()).not.toThrow();
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to initialize chatbot:', expect.any(Error));
 
+    // Restore
+    document.createElement = originalCreateElement;
     consoleErrorSpy.mockRestore();
   });
 });
