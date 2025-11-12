@@ -69,19 +69,41 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return None
 
     def _load_portfolio_context(self) -> str:
-        # Read index.html as context for the assistant
+        # Read index.html as context for the assistant using proper HTML parsing
         try:
+            from html.parser import HTMLParser
+
+            class TextExtractor(HTMLParser):
+                def __init__(self):
+                    super().__init__()
+                    self.text_parts = []
+                    self.skip_tags = {'script', 'style', 'noscript'}
+                    self.current_tag = None
+
+                def handle_starttag(self, tag, attrs):
+                    if tag in self.skip_tags:
+                        self.current_tag = tag
+
+                def handle_endtag(self, tag):
+                    if tag == self.current_tag:
+                        self.current_tag = None
+
+                def handle_data(self, data):
+                    if self.current_tag is None:
+                        stripped = data.strip()
+                        if stripped:
+                            self.text_parts.append(stripped)
+
             with open('index.html', 'r', encoding='utf-8') as f:
                 content = f.read()
-            # Strip tags roughly to reduce token noise
-            # Very naive removal; good enough for context.
-            import re
-            text = re.sub(r'<script[\s\S]*?</script>', ' ', content, flags=re.I)
-            text = re.sub(r'<style[\s\S]*?</style>', ' ', text, flags=re.I)
-            text = re.sub(r'<[^>]+>', ' ', text)
-            text = re.sub(r'\s+', ' ', text)
-            return text.strip()[:20000]
-        except Exception:
+
+            parser = TextExtractor()
+            parser.feed(content)
+            text = ' '.join(parser.text_parts)
+            return text[:20000]
+        except Exception as e:
+            # Fallback to empty context on error
+            print(f"Warning: Failed to load portfolio context: {e}")
             return ''
 
     def do_POST(self):
