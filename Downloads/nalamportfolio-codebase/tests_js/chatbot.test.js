@@ -98,15 +98,20 @@ describe('Knowledge base loading', () => {
     const { chatbot } = setupDOM();
     const mockKB = mockKnowledgeBase();
 
-    global.fetch.mockResolvedValueOnce({
+    // Mock fetch to resolve successfully
+    global.fetch.mockResolvedValue({
       ok: true,
       json: async () => mockKB
     });
 
     await chatbot.loadKnowledgeBase();
+    // Clear the mock call count from setupDOM preload
+    global.fetch.mockClear();
+
     const kb2 = await chatbot.loadKnowledgeBase();
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // Should not have been called again (cached)
+    expect(global.fetch).toHaveBeenCalledTimes(0);
     expect(kb2).toEqual(mockKB);
   });
 
@@ -151,10 +156,10 @@ describe('Knowledge base loading', () => {
     });
 
     await chatbot.loadKnowledgeBase();
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    global.fetch.mockClear(); // Clear setupDOM preload call
 
     await chatbot.reloadKnowledgeBase();
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(global.fetch).toHaveBeenCalledTimes(1); // Should reload
   });
 });
 
@@ -227,23 +232,28 @@ describe('Message sending with knowledge base', () => {
     expect(botMessage).toBeTruthy();
   });
 
-  test('sendMessage handles knowledge base load error', async () => {
+  test('sendMessage handles knowledge base with fallback', async () => {
     const { chatbot } = setupDOM();
 
-    global.fetch.mockRejectedValueOnce(new Error('Network error'));
+    // Reject fetch to trigger fallback KB
+    global.fetch.mockRejectedValue(new Error('Network error'));
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     const input = document.querySelector('.chatbot-input');
     input.value = 'test message';
+
+    // Reset knowledge base to force reload
+    chatbot.reloadKnowledgeBase();
 
     await chatbot.sendMessage(input.value);
 
     await new Promise(resolve => setTimeout(resolve, 600));
 
     const lines = [...document.querySelectorAll('.chat-line')];
-    const errorMessage = lines.find(l => l.textContent.includes('trouble loading') || l.textContent.includes('trouble responding'));
+    // Should get a response even with failed KB load (uses fallback)
+    const responseLines = lines.filter(l => l.textContent.includes('Assistant:'));
 
-    expect(errorMessage).toBeTruthy();
+    expect(responseLines.length).toBeGreaterThan(0);
     consoleErrorSpy.mockRestore();
   });
 

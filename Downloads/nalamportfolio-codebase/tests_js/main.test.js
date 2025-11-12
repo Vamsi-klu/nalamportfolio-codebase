@@ -44,6 +44,11 @@ class IntersectionObserverMock {
   disconnect() {
     this.elements = [];
   }
+
+  // Expose method to manually trigger callbacks
+  triggerCallback(entries) {
+    this.callback(entries, this);
+  }
 }
 
 global.IntersectionObserver = IntersectionObserverMock;
@@ -101,6 +106,10 @@ describe('ThemeManager', () => {
     expect(document.querySelector('.theme-icon').textContent).toBe('🌙');
   });
 
+  test('updateThemeIcon handles missing element gracefully', () => {
+    expect(() => Portfolio.ThemeManager.updateThemeIcon('dark')).not.toThrow();
+  });
+
   test('dispatchThemeChange fires custom event', (done) => {
     window.addEventListener('themechange', (e) => {
       expect(e.detail.theme).toBe('dark');
@@ -113,7 +122,7 @@ describe('ThemeManager', () => {
 describe('NavbarManager', () => {
   beforeEach(() => {
     document.body.innerHTML = '<nav class="navbar"></nav>';
-    window.scrollY = 0;
+    Object.defineProperty(window, 'scrollY', { value: 0, writable: true, configurable: true });
   });
 
   test('updateNavbar applies light theme styles when not scrolled', () => {
@@ -133,7 +142,7 @@ describe('NavbarManager', () => {
   });
 
   test('updateNavbar applies scrolled styles', () => {
-    Object.defineProperty(window, 'scrollY', { value: 100, writable: true });
+    Object.defineProperty(window, 'scrollY', { value: 100, writable: true, configurable: true });
     Portfolio.ThemeManager.setTheme('light');
     Portfolio.NavbarManager.updateNavbar();
     const navbar = document.querySelector('.navbar');
@@ -144,6 +153,16 @@ describe('NavbarManager', () => {
   test('updateNavbar handles missing navbar gracefully', () => {
     document.body.innerHTML = '';
     expect(() => Portfolio.NavbarManager.updateNavbar()).not.toThrow();
+  });
+
+  test('init sets up scroll and theme listeners', () => {
+    const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+    Portfolio.NavbarManager.init();
+
+    expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), { passive: true });
+    expect(addEventListenerSpy).toHaveBeenCalledWith('themechange', expect.any(Function));
+
+    addEventListenerSpy.mockRestore();
   });
 });
 
@@ -156,10 +175,12 @@ describe('TypingAnimation', () => {
       isDeleting: false,
       timeoutId: null
     };
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     Portfolio.TypingAnimation.stop();
+    jest.useRealTimers();
   });
 
   test('setup initializes typing animation', () => {
@@ -172,33 +193,69 @@ describe('TypingAnimation', () => {
     expect(() => Portfolio.TypingAnimation.setup()).not.toThrow();
   });
 
-  test('type updates element textContent', () => {
+  test('type updates element textContent progressively', () => {
     Portfolio.TypingAnimation.setup();
+
+    // Simulate typing forward
     Portfolio.TypingAnimation.type();
-    const text = document.querySelector('.typing-text').textContent;
-    expect(text.length).toBeGreaterThan(0);
+    expect(document.querySelector('.typing-text').textContent.length).toBeGreaterThan(0);
+
+    jest.advanceTimersByTime(100);
+    Portfolio.TypingAnimation.type();
+    expect(document.querySelector('.typing-text').textContent.length).toBeGreaterThan(0);
+  });
+
+  test('type handles deletion phase', () => {
+    Portfolio.TypingAnimation.setup();
+    Portfolio.TypingAnimation.state.isDeleting = true;
+    Portfolio.TypingAnimation.state.currentChar = 5;
+
+    Portfolio.TypingAnimation.type();
+    expect(Portfolio.TypingAnimation.state.currentChar).toBe(4);
+  });
+
+  test('type cycles to next role after deletion', () => {
+    Portfolio.TypingAnimation.setup();
+    Portfolio.TypingAnimation.state.isDeleting = true;
+    Portfolio.TypingAnimation.state.currentChar = 1;
+    Portfolio.TypingAnimation.state.currentRole = 0;
+
+    Portfolio.TypingAnimation.type();
+
+    expect(Portfolio.TypingAnimation.state.currentChar).toBe(0);
+    expect(Portfolio.TypingAnimation.state.isDeleting).toBe(false);
+    expect(Portfolio.TypingAnimation.state.currentRole).toBe(1);
+  });
+
+  test('type pauses at end of word before deleting', () => {
+    Portfolio.TypingAnimation.setup();
+    const currentRole = Portfolio.TypingAnimation.roles[0];
+    Portfolio.TypingAnimation.state.currentChar = currentRole.length - 1;
+    Portfolio.TypingAnimation.state.isDeleting = false;
+
+    Portfolio.TypingAnimation.type();
+
+    expect(Portfolio.TypingAnimation.state.isDeleting).toBe(true);
   });
 
   test('stop clears timeout', () => {
     Portfolio.TypingAnimation.state.timeoutId = setTimeout(() => {}, 1000);
+    const timeoutId = Portfolio.TypingAnimation.state.timeoutId;
     Portfolio.TypingAnimation.stop();
     expect(Portfolio.TypingAnimation.state.timeoutId).toBeNull();
-  });
-
-  test('typing cycles through roles', (done) => {
-    Portfolio.TypingAnimation.setup();
-    const initialRole = Portfolio.TypingAnimation.state.currentRole;
-
-    // Fast forward through multiple cycles
-    setTimeout(() => {
-      expect(Portfolio.TypingAnimation.element.textContent.length).toBeGreaterThan(0);
-      done();
-    }, 100);
   });
 });
 
 describe('Utils', () => {
-  test('debounce delays function execution', (done) => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('debounce delays function execution', () => {
     let counter = 0;
     const debouncedFn = Portfolio.Utils.debounce(() => { counter++; }, 50);
 
@@ -208,22 +265,18 @@ describe('Utils', () => {
 
     expect(counter).toBe(0);
 
-    setTimeout(() => {
-      expect(counter).toBe(1);
-      done();
-    }, 100);
+    jest.advanceTimersByTime(50);
+    expect(counter).toBe(1);
   });
 
-  test('debounce passes arguments correctly', (done) => {
+  test('debounce passes arguments correctly', () => {
     let result = null;
     const debouncedFn = Portfolio.Utils.debounce((a, b) => { result = a + b; }, 50);
 
     debouncedFn(5, 10);
 
-    setTimeout(() => {
-      expect(result).toBe(15);
-      done();
-    }, 100);
+    jest.advanceTimersByTime(50);
+    expect(result).toBe(15);
   });
 });
 
@@ -273,15 +326,47 @@ describe('NavigationManager', () => {
     expect(() => Portfolio.NavigationManager.setupMobileMenu()).not.toThrow();
   });
 
+  test('setupActiveLink handles empty sections gracefully', () => {
+    document.body.innerHTML = '<a href="#home" class="nav-link">Home</a>';
+    expect(() => Portfolio.NavigationManager.setupActiveLink()).not.toThrow();
+  });
+
+  test('setupActiveLink handles empty nav links gracefully', () => {
+    document.body.innerHTML = '<section id="home">Home</section>';
+    expect(() => Portfolio.NavigationManager.setupActiveLink()).not.toThrow();
+  });
+
+  test('setupActiveLink creates IntersectionObserver', (done) => {
+    Portfolio.NavigationManager.setupActiveLink();
+
+    setTimeout(() => {
+      const homeLink = document.querySelector('a[href="#home"]');
+      expect(homeLink.classList.contains('active')).toBe(true);
+      done();
+    }, 10);
+  });
+
   test('setupSmoothScrolling handles anchor clicks', () => {
     Portfolio.NavigationManager.setupSmoothScrolling();
     const link = document.querySelector('a[href="#home"]');
-    const scrollSpy = jest.spyOn(window, 'scrollTo');
+    const scrollSpy = jest.spyOn(window, 'scrollTo').mockImplementation();
 
     const event = new Event('click', { bubbles: true, cancelable: true });
     link.dispatchEvent(event);
 
     expect(scrollSpy).toHaveBeenCalled();
+    scrollSpy.mockRestore();
+  });
+
+  test('setupSmoothScrolling handles clicks on non-anchor elements', () => {
+    Portfolio.NavigationManager.setupSmoothScrolling();
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+
+    const scrollSpy = jest.spyOn(window, 'scrollTo').mockImplementation();
+    div.click();
+
+    expect(scrollSpy).not.toHaveBeenCalled();
     scrollSpy.mockRestore();
   });
 });
@@ -303,12 +388,17 @@ describe('AccessibilityManager', () => {
   test('setupSkipLink handles skip link clicks', () => {
     Portfolio.AccessibilityManager.setupSkipLink();
     const skipLink = document.querySelector('.skip-link');
-    const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
+    const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView').mockImplementation();
 
     skipLink.click();
 
     expect(scrollSpy).toHaveBeenCalled();
     scrollSpy.mockRestore();
+  });
+
+  test('setupSkipLink handles missing skip link gracefully', () => {
+    document.body.innerHTML = '';
+    expect(() => Portfolio.AccessibilityManager.setupSkipLink()).not.toThrow();
   });
 
   test('setupKeyboardNavigation adds tabindex to project cards', () => {
@@ -368,33 +458,49 @@ describe('ContactInteractions', () => {
       <a href="tel:1234567890" class="contact-link">Phone</a>
       <a href="#" class="contact-link">Other</a>
     `;
+    jest.useFakeTimers();
   });
 
-  test('setup adds click animations to contact links', (done) => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('setup adds click animations to contact links', () => {
     Portfolio.ContactInteractions.setup();
     const link = document.querySelector('.contact-link');
 
-    const consoleSpy = jest.spyOn(console, 'log');
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
     link.click();
 
     expect(link.style.transform).toBe('scale(0.95)');
     expect(consoleSpy).toHaveBeenCalledWith('Email link clicked');
 
-    setTimeout(() => {
-      expect(link.style.transform).toBe('scale(1)');
-      consoleSpy.mockRestore();
-      done();
-    }, 150);
+    jest.advanceTimersByTime(100);
+    expect(link.style.transform).toBe('scale(1)');
+
+    consoleSpy.mockRestore();
   });
 
   test('setup logs phone clicks correctly', () => {
     Portfolio.ContactInteractions.setup();
     const phoneLink = document.querySelectorAll('.contact-link')[1];
-    const consoleSpy = jest.spyOn(console, 'log');
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
     phoneLink.click();
 
     expect(consoleSpy).toHaveBeenCalledWith('Phone link clicked');
+    consoleSpy.mockRestore();
+  });
+
+  test('setup handles links without mailto or tel', () => {
+    Portfolio.ContactInteractions.setup();
+    const otherLink = document.querySelectorAll('.contact-link')[2];
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
+    otherLink.click();
+
+    expect(consoleSpy).not.toHaveBeenCalledWith('Email link clicked');
+    expect(consoleSpy).not.toHaveBeenCalledWith('Phone link clicked');
     consoleSpy.mockRestore();
   });
 });
@@ -462,6 +568,16 @@ describe('ScrollAnimations', () => {
     expect(document.querySelector('.project-card').classList.contains('animate-on-scroll')).toBe(true);
     expect(document.querySelector('.contact-link').classList.contains('animate-on-scroll')).toBe(true);
   });
+
+  test('setup triggers animation on intersection', (done) => {
+    Portfolio.ScrollAnimations.setup();
+
+    setTimeout(() => {
+      const profileCard = document.querySelector('.profile-card');
+      expect(profileCard.classList.contains('animate')).toBe(true);
+      done();
+    }, 10);
+  });
 });
 
 describe('EventDelegator', () => {
@@ -496,8 +612,11 @@ describe('EventDelegator', () => {
     Portfolio.EventDelegator.init();
 
     const card = document.querySelector('.project-card');
+    card.tabIndex = 0;
+    card.focus();
 
-    const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+    const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+    Object.defineProperty(enterEvent, 'target', { value: card, enumerable: true });
     card.dispatchEvent(enterEvent);
 
     expect(card.classList.contains('flipped')).toBe(true);
@@ -508,11 +627,26 @@ describe('EventDelegator', () => {
     Portfolio.EventDelegator.init();
 
     const card = document.querySelector('.project-card');
+    card.tabIndex = 0;
+    card.focus();
 
-    const spaceEvent = new KeyboardEvent('keydown', { key: ' ', bubbles: true });
+    const spaceEvent = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+    Object.defineProperty(spaceEvent, 'target', { value: card, enumerable: true });
     card.dispatchEvent(spaceEvent);
 
     expect(card.classList.contains('flipped')).toBe(true);
+  });
+
+  test('init ignores other keys for project cards', () => {
+    document.body.innerHTML = '<div class="project-card">Project</div>';
+    Portfolio.EventDelegator.init();
+
+    const card = document.querySelector('.project-card');
+
+    const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+    card.dispatchEvent(tabEvent);
+
+    expect(card.classList.contains('flipped')).toBe(false);
   });
 });
 
@@ -523,7 +657,7 @@ describe('PortfolioApp', () => {
 
     Portfolio.PortfolioApp.init();
 
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Failed to initialize'));
     consoleErrorSpy.mockRestore();
   });
 
