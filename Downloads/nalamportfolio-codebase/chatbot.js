@@ -4,31 +4,8 @@ function ChatbotFactory() {
     open: false,
     sending: false,
     dom: {},
-    knowledgeBase: null
+    conversationHistory: [],
   };
-
-  // Load knowledge base from JSON
-  async function loadKnowledgeBase() {
-    if (state.knowledgeBase) return state.knowledgeBase;
-
-    try {
-      const response = await fetch('chatbot-knowledge.json');
-      if (!response.ok) {
-        throw new Error(`Failed to load knowledge base: ${response.status}`);
-      }
-      state.knowledgeBase = await response.json();
-      return state.knowledgeBase;
-    } catch (error) {
-      console.error('Error loading knowledge base:', error);
-      // Fallback to minimal embedded knowledge
-      state.knowledgeBase = {
-        default: {
-          response: "I'm having trouble loading my knowledge base. Please try refreshing the page or contact Ramachandra directly at nrcvamsi@gmail.com."
-        }
-      };
-      return state.knowledgeBase;
-    }
-  }
 
   function el(tag, attrs = {}, children = []) {
     const node = document.createElement(tag);
@@ -52,45 +29,6 @@ function ChatbotFactory() {
     state.dom.log.scrollTop = state.dom.log.scrollHeight;
   }
 
-  async function findBestResponse(message) {
-    const kb = await loadKnowledgeBase();
-    const msgLower = message.toLowerCase();
-
-    // Check for greetings
-    if (kb.greeting && kb.greeting.pattern) {
-      const greetingRegex = new RegExp(kb.greeting.pattern, 'i');
-      if (greetingRegex.test(message)) {
-        return kb.greeting.response;
-      }
-    }
-
-    // Score each category based on keyword matches
-    let bestMatch = null;
-    let highestScore = 0;
-
-    for (const [category, data] of Object.entries(kb)) {
-      if (category === 'greeting' || category === 'default' || !data.keywords) continue;
-
-      let score = 0;
-      for (const keyword of data.keywords) {
-        if (msgLower.includes(keyword)) {
-          score += 1;
-        }
-      }
-      if (score > highestScore) {
-        highestScore = score;
-        bestMatch = data.response;
-      }
-    }
-
-    if (bestMatch && highestScore > 0) {
-      return bestMatch;
-    }
-
-    // Default response
-    return kb.default ? kb.default.response : "I'm here to help! Ask me anything about Ramachandra.";
-  }
-
   async function sendMessage(message) {
     if (state.sending) return;
     const msg = (message || '').trim();
@@ -102,21 +40,57 @@ function ChatbotFactory() {
     state.dom.input.disabled = true;
     state.dom.button.disabled = true;
 
-    // Simulate brief thinking time for better UX
-    setTimeout(async () => {
-      try {
-        const response = await findBestResponse(msg);
-        appendMessage('assistant', response);
-      } catch (e) {
-        appendMessage('assistant', "I'm having trouble responding right now. Please try asking about Ramachandra's experience, skills, projects, or contact information.");
-        console.error('Chatbot error:', e);
-      } finally {
-        state.sending = false;
-        state.dom.input.disabled = false;
-        state.dom.button.disabled = false;
-        state.dom.input.focus();
+    // Show typing indicator
+    const typingId = 'typing-' + Date.now();
+    const typingLine = el('div', { class: 'chat-line chat-assistant', id: typingId });
+    typingLine.appendChild(el('b', { text: 'Assistant: ' }));
+    typingLine.appendChild(el('span', { text: 'Typing...' }));
+    state.dom.log.appendChild(typingLine);
+    state.dom.log.scrollTop = state.dom.log.scrollHeight;
+
+    // Add user message to history
+    state.conversationHistory.push({ role: 'user', text: msg });
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: msg,
+          history: state.conversationHistory.slice(0, -1)
+        })
+      });
+
+      // Remove typing indicator
+      const typingEl = document.getElementById(typingId);
+      if (typingEl) typingEl.remove();
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `Server error: ${response.status}`);
       }
-    }, 500); // Small delay for natural feel
+
+      const data = await response.json();
+      const replyText = data.reply || "I didn't get a response.";
+
+      appendMessage('assistant', replyText);
+
+      // Add assistant response to history
+      state.conversationHistory.push({ role: 'assistant', text: replyText });
+
+    } catch (e) {
+      // Remove typing indicator if still there
+      const typingEl = document.getElementById(typingId);
+      if (typingEl) typingEl.remove();
+
+      console.error(e);
+      appendMessage('assistant', "Sorry, I'm having trouble connecting to the server. Please check if the backend is running.");
+    } finally {
+      state.sending = false;
+      state.dom.input.disabled = false;
+      state.dom.button.disabled = false;
+      state.dom.input.focus();
+    }
   }
 
   function toggleChatbot() {
@@ -171,9 +145,6 @@ function ChatbotFactory() {
     // Greet
     appendMessage('assistant', 'Hi! Ask me anything about Ramachandra.');
 
-    // Preload knowledge base
-    loadKnowledgeBase().catch(e => console.error('Failed to preload knowledge base:', e));
-
     return root;
   }
 
@@ -185,20 +156,12 @@ function ChatbotFactory() {
     }
   }
 
-  // Expose method to reset/reload knowledge base (useful for testing)
-  function reloadKnowledgeBase() {
-    state.knowledgeBase = null;
-    return loadKnowledgeBase();
-  }
-
   return {
     createChatbot,
     sendMessage,
     appendMessage,
     toggleChatbot,
     init,
-    loadKnowledgeBase,
-    reloadKnowledgeBase,
     // Expose for testing
     _getState: () => state
   };

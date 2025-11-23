@@ -120,6 +120,8 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         data = self._read_json() or {}
         question = data.get('question') if isinstance(data, dict) else None
+        history = data.get('history') if isinstance(data, dict) else None
+        
         if not isinstance(question, str) or not question.strip():
             return self._send_json(400, {"error": "'question' must be a non-empty string"})
 
@@ -127,11 +129,12 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         context_text = self._load_portfolio_context()
 
         try:
-            reply = generate_response(question.strip(), context_text=context_text)
+            reply = generate_response(question.strip(), context_text=context_text, history=history)
         except ValueError as e:
             # Likely configuration issue like missing API key
             return self._send_json(500, {"error": str(e)})
         except GeminiError as e:
+            print(f"❌ Gemini API Error: {e}")
             return self._send_json(502, {"error": str(e)})
         except Exception as e:
             return self._send_json(500, {"error": f"Unexpected error: {e}"})
@@ -174,10 +177,11 @@ def main():
                     sys.exit(0)
                     
         except OSError as e:
-            if e.errno == 98:  # Address already in use
-                print(f"⚠️  Port {PORT} is busy, waiting... (attempt {attempt + 1}/{max_retries})")
+            if e.errno == 98 or e.errno == 48:  # Address already in use (98 on Linux, 48 on macOS)
+                print(f"⚠️  Port {PORT} is busy, trying next port...")
+                PORT += 1
                 if attempt < max_retries - 1:
-                    time.sleep(2)  # Wait before retrying
+                    time.sleep(1)  # Wait before retrying
                     continue
                 else:
                     print(f"❌ Could not bind to port {PORT} after {max_retries} attempts")
