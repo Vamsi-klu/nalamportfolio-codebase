@@ -48,11 +48,12 @@ def _extract_text_from_response(data: Dict[str, Any]) -> str:
 def generate_response(
     question: str,
     context_text: str,
+    history: Optional[list] = None,
     api_key: Optional[str] = None,
     timeout: float = 15.0,
 ) -> str:
     """
-    Call Gemini generateContent with a question and site context.
+    Call Gemini generateContent with a question, site context, and optional history.
 
     Raises:
         ValueError: if inputs are invalid or api key missing.
@@ -70,14 +71,32 @@ def generate_response(
     system_prompt = _build_system_prompt(context_text)
     user_prompt = question.strip()
 
+    # Build the conversation parts
+    parts = [{"text": system_prompt}]
+    
+    # Add history if provided
+    if history and isinstance(history, list):
+        for msg in history:
+            role = msg.get('role')
+            text = msg.get('text')
+            if role and text:
+                # Map 'assistant' to 'model' for Gemini API if needed, 
+                # though 'model' is the standard role for the AI.
+                # Here we just include it in the text flow or structured parts.
+                # For simplicity in this stateless approach with "parts", 
+                # we can format it as a transcript or separate parts.
+                # Let's append to parts.
+                prefix = "User: " if role == 'user' else "Assistant: "
+                parts.append({"text": f"{prefix}{text}"})
+
+    # Add the current question
+    parts.append({"text": f"Question: {user_prompt}"})
+
     url = f"{GEMINI_BASE_URL}/models/{GEMINI_MODEL}:generateContent?key={key}"
     payload: Dict[str, Any] = {
         "contents": [
             {
-                # role is optional; the API infers it for simple cases
-                "parts": [
-                    {"text": system_prompt + f"Question: {user_prompt}"}
-                ]
+                "parts": parts
             }
         ],
         # Add some reasonable safety & generation config defaults

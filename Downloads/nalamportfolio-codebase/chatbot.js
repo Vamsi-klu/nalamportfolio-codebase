@@ -57,7 +57,12 @@ function ChatbotFactory() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: msg,
+<<<<<<< HEAD
           history: state.conversationHistory.slice(0, -1)
+=======
+          history: state.conversationHistory.slice(0, -1) // Send history excluding current message (or include it? Backend logic handles "question" separately, so exclude current)
+          // Actually, let's just send the previous history. The backend treats "question" as the new input.
+>>>>>>> 004cf6e (feat: Implement chatbot conversation history for context-aware responses)
         })
       });
 
