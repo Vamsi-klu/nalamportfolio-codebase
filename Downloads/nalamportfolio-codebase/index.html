@@ -3,557 +3,445 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ramachandra Nalam - Data Engineer Portfolio</title>
-    <meta name="description" content="Data Engineer specializing in real-time analytics and data pipelines with 7+ years of experience">
+    <title>Ramachandra Nalam | Data Engineer</title>
+    <meta name="description" content="Data Engineer at Meta building data systems that process 50B+ events daily.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Open Graph -->
-    <meta property="og:title" content="Ramachandra Nalam — Data Engineer Portfolio">
-    <meta property="og:description" content="Data Engineer specializing in real-time analytics and data pipelines.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nalamportfolio.dev/">
-    <meta property="og:image" content="profile-image.jpg">
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ramachandra Nalam — Data Engineer Portfolio">
-    <meta name="twitter:description" content="Data Engineer specializing in real-time analytics and data pipelines.">
-    <meta name="twitter:image" content="profile-image.jpg">
-    <meta name="theme-color" content="#3b82f6">
-    <link rel="canonical" href="https://nalamportfolio.dev/">
-    <!-- Favicon -->
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <script>
-      // Redirect www to apex for canonical URL
-      (function() {
-        try {
-          if (location.hostname === 'www.nalamportfolio.dev') {
-            var to = 'https://nalamportfolio.dev' + location.pathname + location.search + location.hash;
-            location.replace(to);
-          }
-        } catch (e) { /* no-op */ }
-      })();
-    </script>
 </head>
 <body>
-    <a href="#main" class="skip-link">Skip to content</a>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-logo">Ramachandra Nalam</a>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
-                <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="#skills" class="nav-link">Skills</a></li>
-                <li class="nav-item"><a href="#experience" class="nav-link">Experience</a></li>
-                <li class="nav-item"><a href="#projects" class="nav-link">Projects</a></li>
-                <li class="nav-item"><a href="#education" class="nav-link">Education</a></li>
-                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="theme-toggle" aria-label="Toggle dark/light theme">
-                    <span class="theme-icon">🌙</span>
-                </button>
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-            </div>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container header-container">
+            <a href="#" class="logo">Ram<span>.</span></a>
+            <nav class="nav" id="nav">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#contact" class="nav-link contact-btn">Contact</a>
+            </nav>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <main id="main" tabindex="-1">
-    <section id="home" class="hero">
-        <div class="hero-container">
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="#about" class="mobile-nav-link">About</a>
+        <a href="#experience" class="mobile-nav-link">Experience</a>
+        <a href="#projects" class="mobile-nav-link">Projects</a>
+        <a href="#skills" class="mobile-nav-link">Skills</a>
+        <a href="#contact" class="mobile-nav-link">Contact</a>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">
-                    Hi, I am <span class="highlight">Ramachandra Nalam!</span>
-                </h1>
-                <div class="hero-subtitle">
-                    <span class="typing-text">Data Engineer</span>
-                    <span class="cursor">|</span>
-                </div>
+                <p class="hero-greeting">Hi, I'm</p>
+                <h1 class="hero-name">Ramachandra Nalam</h1>
+                <h2 class="hero-title">Data Engineer at <span class="company">Meta</span></h2>
                 <p class="hero-description">
-                    Building large-scale data pipelines, real-time analytics & data warehousing solutions
+                    I build robust data pipelines and analytics systems that process
+                    <strong>50 billion+ events daily</strong>. Specializing in real-time streaming,
+                    cloud architecture, and turning complex data into actionable insights.
                 </p>
-                <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-primary">Get In Touch</a>
-                    <a href="#projects" class="btn btn-outline">View Projects</a>
+                <div class="hero-cta">
+                    <a href="#projects" class="btn btn-primary">View My Work</a>
+                    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">7+</span>
+                        <span class="stat-text">Years Experience</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50B+</span>
+                        <span class="stat-text">Daily Events</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-text">Data Accuracy</span>
+                    </div>
                 </div>
             </div>
-            <div class="hero-image">
-                <div class="profile-image">
-                    <img src="profile-image.jpg" alt="Ramachandra Nalam - Data Engineer" class="profile-img">
+            <div class="hero-visual">
+                <div class="visual-card">
+                    <div class="code-window">
+                        <div class="window-header">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                            <span class="file-name">pipeline.py</span>
+                        </div>
+                        <pre class="code-content"><code><span class="keyword">from</span> spark.sql <span class="keyword">import</span> SparkSession
+<span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaConsumer
+
+<span class="keyword">class</span> <span class="class">DataPipeline</span>:
+    <span class="keyword">def</span> <span class="function">process_events</span>(self):
+        <span class="comment"># Process 50B+ events daily</span>
+        events = self.stream.readStream()
+        transformed = events.transform()
+        <span class="keyword">return</span> transformed.writeStream()</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Profile Info -->
-    <section class="profile-info">
+    <!-- About -->
+    <section class="about" id="about">
         <div class="container">
-            <div class="profile-card">
-                <div class="profile-item">
-                    <strong>Name:</strong> Ramachandra Nalam
+            <div class="section-label">About Me</div>
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2>Building Data Systems <br>That Scale</h2>
+                    <p>
+                        With over 7 years of experience, I've evolved from building ETL pipelines
+                        to architecting enterprise-scale data systems. Currently at Meta, I lead
+                        initiatives processing billions of events daily for real-time messaging analytics.
+                    </p>
+                    <p>
+                        My passion lies in solving complex data challenges—reducing data lag by 35%,
+                        achieving 99.9% accuracy, and cutting infrastructure costs by 40%. I believe
+                        great data engineering is invisible: reliable, fast, and always available.
+                    </p>
+                    <div class="about-details">
+                        <div class="detail">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">Seattle, WA</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-label">Education</span>
+                            <span class="detail-value">MS Data Science, UB</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-label">Focus</span>
+                            <span class="detail-value">Real-time Analytics</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="profile-item">
-                    <strong>Profile:</strong> Data Engineer — Real-time Analytics & Data Pipelines
-                </div>
-                <div class="profile-item">
-                    <strong>Email:</strong> <a href="mailto:nrcvamsi@gmail.com">nrcvamsi@gmail.com</a>
-                </div>
-                <div class="profile-item">
-                    <strong>Current Location:</strong> Seattle, WA 98104
+                <div class="about-image">
+                    <div class="image-frame">
+                        <div class="image-placeholder">
+                            <span class="initials">RN</span>
+                        </div>
+                        <div class="image-decoration"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
+    <!-- Experience -->
+    <section class="experience" id="experience">
         <div class="container">
-            <h2 class="section-title">Technical Skills</h2>
-            <div class="skills-grid">
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Python & R</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Apache Spark & PySpark</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Apache Kafka & Streaming</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">AWS (Glue, S3, Redshift)</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Snowflake & Data Warehousing</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">SQL & Database Management</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Tableau & Power BI</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Apache Airflow & Orchestration</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">dbt & Data Modeling</span>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Machine Learning & TensorFlow</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Skills Tags -->
-            <div class="skills-tags">
-                <h3>Technologies & Tools</h3>
-                <div class="tags-container">
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">R</span>
-                    <span class="skill-tag">Scala</span>
-                    <span class="skill-tag">SQL</span>
-                    <span class="skill-tag">JavaScript</span>
-                    <span class="skill-tag">TypeScript</span>
-                    <span class="skill-tag">Apache Spark</span>
-                    <span class="skill-tag">Apache Hadoop</span>
-                    <span class="skill-tag">Apache Kafka</span>
-                    <span class="skill-tag">Apache Airflow</span>
-                    <span class="skill-tag">Apache NiFi</span>
-                    <span class="skill-tag">AWS Glue</span>
-                    <span class="skill-tag">Azure Data Factory</span>
-                    <span class="skill-tag">Google BigQuery</span>
-                    <span class="skill-tag">Snowflake</span>
-                    <span class="skill-tag">Redshift</span>
-                    <span class="skill-tag">Tableau</span>
-                    <span class="skill-tag">Power BI</span>
-                    <span class="skill-tag">Looker</span>
-                    <span class="skill-tag">dbt</span>
-                    <span class="skill-tag">Great Expectations</span>
-                    <span class="skill-tag">TensorFlow</span>
-                    <span class="skill-tag">Git</span>
-                    <span class="skill-tag">Jenkins</span>
-                    <span class="skill-tag">Docker</span>
-                    <span class="skill-tag">Databricks</span>
-                    <span class="skill-tag">CI/CD</span>
-                    <span class="skill-tag">Azure DevOps</span>
-                    <span class="skill-tag">Jira</span>
-                    <span class="skill-tag">NLP</span>
-                    <span class="skill-tag">OpenAI</span>
-                </div>
-            </div>
-        </div>
-    </section>
+            <div class="section-label">Experience</div>
+            <h2 class="section-title">Where I've Worked</h2>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">Professional Summary</h2>
-            <div class="about-content">
-                <p>
-                    Result-oriented professional with <strong>7+ years</strong> in building large-scale data pipelines, 
-                    real-time analytics, and data warehousing across technology, retail, and financial domains. 
-                </p>
-                <p>
-                    Expertise in <strong>Apache Spark, Kafka, Airflow, and Snowflake</strong>, designing pipelines, and 
-                    reducing data lag by 35%. Proficient in data modeling, automation, dashboard development, and 
-                    achieving cost savings and workload reduction.
-                </p>
-                <p>
-                    Proven success in partnering with cross-functional teams, delivering high-impact data solutions, 
-                    and driving measurable business outcomes. Currently working at <strong>Meta</strong> as a Data Engineer, 
-                    handling 50B+ daily events and creating multi-dimensional data models for user engagement tracking.
-                </p>
-                <p>
-                    <strong>Core Competencies:</strong> Real-time Analytics, Data Pipeline Architecture, ETL/ELT Development, 
-                    Data Warehouse Design, Stream Processing, Data Quality Framework, Business Intelligence, Machine Learning Integration
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <h2 class="section-title">Professional Experience</h2>
             <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">Sep 2024 - Present</div>
+                <article class="timeline-item">
+                    <div class="timeline-marker"></div>
                     <div class="timeline-content">
-                        <h3>Data Engineer</h3>
-                        <h4>Meta</h4>
-                        <ul>
-                            <li>Created a real-time messaging analytics pipeline handling 50B+ daily events using Apache Kafka and Spark, applying dbt transformations, simplified data modeling by 60% and supported self-serve metrics</li>
-                            <li>Developed multi-dimensional data models for user engagement tracking, creating reusable dbt semantic layers powering 15+ executive dashboards in Looker and reducing report generation time</li>
-                            <li>Implemented data quality framework with Great Expectations and Python validators, maintaining 99.9% data accuracy and preventing 12+ business-critical incidents through anomaly detection automation</li>
-                            <li>Coordinated cross-functional analytics projects with Product, Growth, and Safety teams, building Airflow ETL pipelines processing 2TB+ daily, contributing to an 8% improvement in message delivery success rate</li>
-                            <li>Designed Tableau dashboards for marketing and sales teams, tracking key performance indicators, achieving a 40% increase in data accessibility for business stakeholders</li>
-                            <li>Designed data warehouse solutions on Snowflake for Messenger analytics, applying query optimizations and partitioning strategies, lowering costs by 40% while supporting 500+ monthly active users</li>
+                        <div class="timeline-header">
+                            <div>
+                                <h3>Data Engineer</h3>
+                                <p class="company-name">Meta</p>
+                            </div>
+                            <span class="timeline-date">2024 — Present</span>
+                        </div>
+                        <ul class="timeline-points">
+                            <li>Built real-time messaging analytics pipeline handling <strong>50B+ daily events</strong> using Kafka and Spark</li>
+                            <li>Simplified data modeling by <strong>60%</strong> through dbt transformations and semantic layers</li>
+                            <li>Achieved <strong>99.9% data accuracy</strong> with Great Expectations validation framework</li>
+                            <li>Reduced Snowflake query costs by <strong>40%</strong> through optimization strategies</li>
                         </ul>
+                        <div class="timeline-tech">
+                            <span>Kafka</span>
+                            <span>Spark</span>
+                            <span>dbt</span>
+                            <span>Snowflake</span>
+                            <span>Airflow</span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-date">Jul 2022 - Aug 2024</div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="timeline-marker"></div>
                     <div class="timeline-content">
-                        <h3>Data Engineer</h3>
-                        <h4>Amazon</h4>
-                        <ul>
-                            <li>Led ETL pipeline development and optimization in AWS using AWS Glue, processing 750GB daily from S3 to Aurora DB with 98% data accuracy</li>
-                            <li>Managed Apache Kafka streaming pipelines handling 500,000 events per second, shortening data lag by 35% and enabling real-time analytics for business reporting</li>
-                            <li>Developed PySpark and Spark SQL applications, transforming 1TB daily from CSV, Parquet, and JSON files, increasing data aggregation precision</li>
-                            <li>Presented weekly data visualizations and actionable insights to stakeholders, integrating SQL, Python, and BI tools, automating reports, improving strategic planning timeliness, increasing campaign reach by 20%</li>
-                            <li>Optimized Redshift queries for reporting pipelines, reducing CPU utilization by 52% and saving 9 hours weekly in monitoring, troubleshooting, and on-call tasks for analysts</li>
+                        <div class="timeline-header">
+                            <div>
+                                <h3>Data Engineer</h3>
+                                <p class="company-name">Amazon</p>
+                            </div>
+                            <span class="timeline-date">2022 — 2024</span>
+                        </div>
+                        <ul class="timeline-points">
+                            <li>Managed Kafka streaming infrastructure handling <strong>500,000 events/second</strong></li>
+                            <li>Led AWS Glue ETL development processing <strong>750GB daily</strong></li>
+                            <li>Reduced CPU utilization by <strong>52%</strong> through Redshift query optimization</li>
+                            <li>Increased campaign reach by <strong>20%</strong> with automated reporting pipelines</li>
                         </ul>
+                        <div class="timeline-tech">
+                            <span>AWS Glue</span>
+                            <span>Redshift</span>
+                            <span>PySpark</span>
+                            <span>Aurora</span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-date">Jan 2021 - Jun 2022</div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="timeline-marker"></div>
                     <div class="timeline-content">
-                        <h3>Data Engineer</h3>
-                        <h4>University at Buffalo (UB)</h4>
-                        <ul>
-                            <li>Consolidated 20,000+ student records, identifying graduation timelines and patterns, improving predictive accuracy for academic interventions by 28%</li>
-                            <li>Orchestrated different machine learning models, including logistic regression, decision tree, and random forest, enhancing risk prediction for 3,500 at-risk students</li>
-                            <li>Achieved 88.74% accuracy with Random Forest, contributing to a strategic initiative, increasing 4-year graduation rates by 23% for targeted student groups</li>
-                            <li>Deployed Snowflake and Redshift data warehouses, partitioning tables and optimizing queries, leading to a 40% boost in resource consumption and supporting internal users</li>
-                            <li>Managed cloud storage on AWS S3 and Azure Data Lake for 50TB+ data, enabling standardized access, governance, and data reliability across departments</li>
+                        <div class="timeline-header">
+                            <div>
+                                <h3>Data Engineer</h3>
+                                <p class="company-name">University at Buffalo</p>
+                            </div>
+                            <span class="timeline-date">2021 — 2022</span>
+                        </div>
+                        <ul class="timeline-points">
+                            <li>Built ML models achieving <strong>88.74% accuracy</strong> for student success prediction</li>
+                            <li>Contributed to <strong>23% improvement</strong> in graduation rates through data insights</li>
+                            <li>Managed <strong>50TB+</strong> data across AWS S3 and Azure Data Lake</li>
                         </ul>
+                        <div class="timeline-tech">
+                            <span>Python</span>
+                            <span>scikit-learn</span>
+                            <span>Snowflake</span>
+                            <span>Azure</span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-date">Aug 2018 - Dec 2020</div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="timeline-marker"></div>
                     <div class="timeline-content">
-                        <h3>Data Engineer</h3>
-                        <h4>Nike India</h4>
-                        <ul>
-                            <li>Orchestrated ETL pipelines for 5 queues, ingesting over 6 million records daily from different sources, achieving 98% data availability and consistency for business intelligence teams</li>
-                            <li>Automated PySpark jobs processing 20TB+ daily datasets, transforming all records per BI requirements, minimizing data processing errors while supporting cross-functional analytics needs</li>
-                            <li>Executed Apache NiFi workflows transferring data across shared folders, triggering automated notifications, and ensuring 95% of Hive table loads completed each business day</li>
-                            <li>Engineered Python scripts aggregating login activities for 150,000 users, transferring processed data to Snowflake, and achieving a 75% reduction in potential security incidents for the organization</li>
+                        <div class="timeline-header">
+                            <div>
+                                <h3>Data Engineer</h3>
+                                <p class="company-name">Nike India</p>
+                            </div>
+                            <span class="timeline-date">2018 — 2020</span>
+                        </div>
+                        <ul class="timeline-points">
+                            <li>Orchestrated ETL pipelines ingesting <strong>6M+ records daily</strong></li>
+                            <li>Automated PySpark jobs processing <strong>20TB+ daily</strong></li>
+                            <li>Achieved <strong>75% reduction</strong> in security incidents through data governance</li>
                         </ul>
+                        <div class="timeline-tech">
+                            <span>PySpark</span>
+                            <span>Apache NiFi</span>
+                            <span>Hive</span>
+                            <span>Python</span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-date">Jul 2017 - Dec 2020</div>
-                    <div class="timeline-content">
-                        <h3>Analytics Engineer</h3>
-                        <h4>Freelancer</h4>
-                        <ul>
-                            <li>Deployed a TensorFlow-based load forecasting system for households, leading to a 10% reduction in energy costs and minimizing customer disruptions by 8%</li>
-                            <li>Led a cross-functional team to prototype system deployment, monitored outcomes, and implemented CI/CD with GitHub Actions and AWS, achieving a 30% acceleration in deployment speed</li>
-                        </ul>
-                    </div>
-                </div>
+                </article>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
+    <!-- Projects -->
+    <section class="projects" id="projects">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <p class="section-subtitle">Click on any card to reveal project details</p>
+            <div class="section-label">Projects</div>
+            <h2 class="section-title">Featured Work</h2>
+
             <div class="projects-grid">
-                <div class="project-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="project-icon">🤖</div>
-                            <h3>Competitive Marketing Intelligence</h3>
-                            <p class="project-category">GenAI & NLP</p>
-                            <p class="card-hint">Click to reveal details →</p>
+                <article class="project-card featured">
+                    <div class="project-info">
+                        <span class="project-label">Featured Project</span>
+                        <h3>Real-Time Messaging Analytics</h3>
+                        <div class="project-description">
+                            <p>Built a comprehensive real-time analytics platform at Meta processing 50B+ events daily.
+                            The system enables instant insights into user engagement patterns, message delivery metrics,
+                            and platform health monitoring.</p>
                         </div>
-                        <div class="card-back">
-                            <h3>Gen-AI Marketing Intelligence</h3>
-                            <p class="project-date">Feb 2022 – Jul 2022</p>
-                            <div class="project-details">
-                                <p>• Directed GenAI chatbot with LLMs, NLP, and vector search</p>
-                                <p>• Extracted intelligence from earnings calls - 30% better data access</p>
-                                <p>• Automated financial page synthesis - 20% workload reduction</p>
-                                <p>• Accelerated insight extraction for executive teams</p>
-                            </div>
-                            <div class="project-tags">
-                                <span class="tag">GenAI</span>
-                                <span class="tag">LLM</span>
-                                <span class="tag">NLP</span>
-                                <span class="tag">Vector Search</span>
-                            </div>
+                        <div class="project-tech-stack">
+                            <span>Apache Kafka</span>
+                            <span>Spark Streaming</span>
+                            <span>dbt</span>
+                            <span>Snowflake</span>
+                            <span>Looker</span>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="project-icon">📊</div>
-                            <h3>Real-time Messaging Analytics</h3>
-                            <p class="project-category">Real-time Analytics</p>
-                            <p class="card-hint">Click to reveal details →</p>
-                        </div>
-                        <div class="card-back">
-                            <h3>Messaging Analytics Pipeline</h3>
-                            <p class="project-date">Meta - Current</p>
-                            <div class="project-details">
-                                <p>• Kafka + Spark pipelines for 50B+ events/day</p>
-                                <p>• dbt semantic layers powering 15+ Looker dashboards</p>
-                                <p>• 99.9% data quality with Great Expectations</p>
-                                <p>• Real-time analytics for business decisions</p>
+                        <div class="project-stats">
+                            <div class="project-stat">
+                                <span class="stat-val">50B+</span>
+                                <span class="stat-desc">Events/Day</span>
                             </div>
-                            <div class="project-tags">
-                                <span class="tag">Kafka</span>
-                                <span class="tag">Spark</span>
-                                <span class="tag">dbt</span>
-                                <span class="tag">Looker</span>
+                            <div class="project-stat">
+                                <span class="stat-val">60%</span>
+                                <span class="stat-desc">Model Simplification</span>
+                            </div>
+                            <div class="project-stat">
+                                <span class="stat-val">15+</span>
+                                <span class="stat-desc">Dashboards</span>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="project-icon">☁️</div>
-                            <h3>AWS Streaming & ETL</h3>
-                            <p class="project-category">Cloud Engineering</p>
-                            <p class="card-hint">Click to reveal details →</p>
-                        </div>
-                        <div class="card-back">
-                            <h3>AWS ETL Optimization</h3>
-                            <p class="project-date">Amazon</p>
-                            <div class="project-details">
-                                <p>• Kafka streaming handling 500k events/sec</p>
-                                <p>• AWS Glue ETL processing 750GB daily</p>
-                                <p>• Redshift optimization - 52% CPU reduction</p>
-                                <p>• Campaign reach increased by 20%</p>
-                            </div>
-                            <div class="project-tags">
-                                <span class="tag">AWS Glue</span>
-                                <span class="tag">Aurora</span>
-                                <span class="tag">Kafka</span>
-                                <span class="tag">Redshift</span>
-                            </div>
-                        </div>
+                </article>
+
+                <article class="project-card">
+                    <span class="project-label">Cloud Infrastructure</span>
+                    <h3>AWS Streaming Platform</h3>
+                    <p>High-throughput streaming infrastructure on AWS handling 500K events/sec with optimized ETL pipelines and real-time processing capabilities.</p>
+                    <div class="project-tech-stack">
+                        <span>AWS</span>
+                        <span>Kafka</span>
+                        <span>Redshift</span>
+                        <span>Glue</span>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <span class="project-label">Machine Learning</span>
+                    <h3>Student Success Prediction</h3>
+                    <p>ML-powered system predicting at-risk students with 88.74% accuracy, contributing to 23% improvement in graduation rates.</p>
+                    <div class="project-tech-stack">
+                        <span>Python</span>
+                        <span>scikit-learn</span>
+                        <span>TensorFlow</span>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <span class="project-label">GenAI</span>
+                    <h3>Marketing Intelligence Bot</h3>
+                    <p>GenAI chatbot leveraging LLMs and vector search to extract actionable insights from earnings calls and market data.</p>
+                    <div class="project-tech-stack">
+                        <span>LangChain</span>
+                        <span>Pinecone</span>
+                        <span>OpenAI</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="skills" id="skills">
+        <div class="container">
+            <div class="section-label">Skills</div>
+            <h2 class="section-title">Technical Expertise</h2>
+
+            <div class="skills-grid">
+                <div class="skill-group">
+                    <h3>Languages</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag primary">Python</span>
+                        <span class="skill-tag primary">SQL</span>
+                        <span class="skill-tag">Scala</span>
+                        <span class="skill-tag">R</span>
+                        <span class="skill-tag">Java</span>
                     </div>
                 </div>
-                
-                <div class="project-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="project-icon">🎓</div>
-                            <h3>Student Success Analytics</h3>
-                            <p class="project-category">Machine Learning</p>
-                            <p class="card-hint">Click to reveal details →</p>
-                        </div>
-                        <div class="card-back">
-                            <h3>Academic Risk Prediction</h3>
-                            <p class="project-date">University at Buffalo</p>
-                            <div class="project-details">
-                                <p>• ML models for 3,500 at-risk students</p>
-                                <p>• 88.74% accuracy with Random Forest</p>
-                                <p>• 23% improvement in graduation rates</p>
-                                <p>• Predictive interventions system</p>
-                            </div>
-                            <div class="project-tags">
-                                <span class="tag">Machine Learning</span>
-                                <span class="tag">Python</span>
-                                <span class="tag">Snowflake</span>
-                            </div>
-                        </div>
+
+                <div class="skill-group">
+                    <h3>Big Data</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag primary">Apache Spark</span>
+                        <span class="skill-tag primary">Apache Kafka</span>
+                        <span class="skill-tag primary">Apache Airflow</span>
+                        <span class="skill-tag">Hadoop</span>
+                        <span class="skill-tag">Flink</span>
                     </div>
                 </div>
-                
-                <div class="project-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="project-icon">⚡</div>
-                            <h3>Nike ETL Platform</h3>
-                            <p class="project-category">Data Engineering</p>
-                            <p class="card-hint">Click to reveal details →</p>
-                        </div>
-                        <div class="card-back">
-                            <h3>Enterprise ETL System</h3>
-                            <p class="project-date">Nike India</p>
-                            <div class="project-details">
-                                <p>• 5 queues processing 6M+ records/day</p>
-                                <p>• 98% data availability achieved</p>
-                                <p>• PySpark jobs for 20TB+ daily datasets</p>
-                                <p>• Apache NiFi workflow automation</p>
-                            </div>
-                            <div class="project-tags">
-                                <span class="tag">PySpark</span>
-                                <span class="tag">Apache NiFi</span>
-                                <span class="tag">Hive</span>
-                            </div>
-                        </div>
+
+                <div class="skill-group">
+                    <h3>Cloud & Databases</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag primary">AWS</span>
+                        <span class="skill-tag primary">Snowflake</span>
+                        <span class="skill-tag primary">dbt</span>
+                        <span class="skill-tag">Azure</span>
+                        <span class="skill-tag">GCP</span>
+                        <span class="skill-tag">Redshift</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MongoDB</span>
                     </div>
                 </div>
-                
-                <div class="project-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="project-icon">🔮</div>
-                            <h3>Load Forecasting System</h3>
-                            <p class="project-category">Time Series & Forecasting</p>
-                            <p class="card-hint">Click to reveal details →</p>
-                        </div>
-                        <div class="card-back">
-                            <h3>Energy Load Prediction</h3>
-                            <p class="project-date">Freelance Project</p>
-                            <div class="project-details">
-                                <p>• TensorFlow-based forecasting model</p>
-                                <p>• 10% energy cost reduction achieved</p>
-                                <p>• 8% fewer customer disruptions</p>
-                                <p>• CI/CD with GitHub Actions & AWS</p>
-                            </div>
-                            <div class="project-tags">
-                                <span class="tag">TensorFlow</span>
-                                <span class="tag">Forecasting</span>
-                                <span class="tag">CI/CD</span>
-                            </div>
-                        </div>
+
+                <div class="skill-group">
+                    <h3>Tools & Visualization</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag primary">Tableau</span>
+                        <span class="skill-tag">Looker</span>
+                        <span class="skill-tag">Power BI</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Education Section -->
-    <section id="education" class="education">
+    <!-- Contact -->
+    <section class="contact" id="contact">
         <div class="container">
-            <h2 class="section-title">Education</h2>
-            <div class="education-grid">
-                <div class="education-card">
-                    <div class="education-icon">🎓</div>
-                    <div class="education-content">
-                        <h3>Master of Science in Data Science</h3>
-                        <h4>University at Buffalo</h4>
-                        <p class="education-date">Jan 2021 – Aug 2022</p>
-                        <p>Specialized in machine learning, big data analytics, and statistical modeling. Developed expertise in building scalable data solutions and predictive analytics systems.</p>
-                    </div>
-                </div>
-                <div class="education-card">
-                    <div class="education-icon">🎓</div>
-                    <div class="education-content">
-                        <h3>Bachelor of Technology in Computer Science</h3>
-                        <h4>K L University</h4>
-                        <p class="education-date">Jun 2014 – Aug 2018</p>
-                        <p>Strong foundation in computer science fundamentals, algorithms, data structures, and software engineering principles.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Get in Touch</h2>
             <div class="contact-content">
-                <p>Let's discuss how we can work together on your next data engineering project.</p>
+                <div class="section-label">Contact</div>
+                <h2>Let's Work Together</h2>
+                <p>I'm always interested in discussing new opportunities, challenging data problems, or connecting with fellow engineers.</p>
+
                 <div class="contact-links">
                     <a href="mailto:nrcvamsi@gmail.com" class="contact-link">
-                        <span class="contact-icon">📧</span>
-                        <span>nrcvamsi@gmail.com</span>
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <div class="contact-text">
+                            <span class="contact-label-text">Email</span>
+                            <span class="contact-value">nrcvamsi@gmail.com</span>
+                        </div>
                     </a>
+
+                    <a href="https://linkedin.com/in/ramachandra-nalam" target="_blank" rel="noopener" class="contact-link">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                                <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+                            </svg>
+                        </div>
+                        <div class="contact-text">
+                            <span class="contact-label-text">LinkedIn</span>
+                            <span class="contact-value">ramachandra-nalam</span>
+                        </div>
+                    </a>
+
                     <a href="tel:+15086140301" class="contact-link">
-                        <span class="contact-icon">📞</span>
-                        <span>+1 (508) 614-0301</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/ramachandra-nalam/" target="_blank" rel="noopener noreferrer" class="contact-link">
-                        <span class="contact-icon">💼</span>
-                        <span>LinkedIn Profile</span>
-                    </a>
-                    <a href="#" class="contact-link">
-                        <span class="contact-icon">📍</span>
-                        <span>Seattle, WA 98104</span>
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                        </div>
+                        <div class="contact-text">
+                            <span class="contact-label-text">Phone</span>
+                            <span class="contact-value">+1 (508) 614-0301</span>
+                        </div>
                     </a>
                 </div>
             </div>
         </div>
     </section>
-    </main>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Ramachandra Nalam. All rights reserved.</p>
+            <p>Designed & Built by Ramachandra Nalam</p>
+            <p class="copyright">© 2025 All rights reserved.</p>
         </div>
     </footer>
 
     <script src="main.js"></script>
-    <script src="chatbot.js"></script>
-    <script>
-      // Initialize the chatbot widget after scripts load
-      try { if (window.Chatbot && typeof window.Chatbot.init === 'function') { window.Chatbot.init(); } } catch (e) {}
-    </script>
 </body>
 </html>
-Triggering deployment...
-<!-- Trigger deployment Sun Sep 14 14:48:27 PDT 2025 -->
-<!-- New deployment Sun Sep 14 14:49:27 PDT 2025 -->
-<!-- Deploy with chatbot Sun Sep 14 14:54:36 PDT 2025 -->
