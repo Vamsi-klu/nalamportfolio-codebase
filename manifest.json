@@ -1,0 +1,16 @@
+{
+  "name": "Ramachandra Nalam - Data Engineer Portfolio",
+  "short_name": "Ram Portfolio",
+  "description": "Data Engineer at Meta building data systems that process 50B+ events daily.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#0066ff",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230066ff' width='100' height='100' rx='20'/><text x='50' y='65' font-size='50' font-family='system-ui' fill='white' text-anchor='middle' font-weight='bold'>RN</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
